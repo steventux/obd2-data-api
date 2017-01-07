@@ -1,24 +1,32 @@
 // handlers_test.go
-package handlers
+package handlers_test
 
 import (
 	"github.com/steventux/obd2-data-api/handlers"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"strings"
 	"testing"
 )
 
-func TestHomeHandler(t *testing.T) {
-	// Create a request to pass to our handler. We don't have any query parameters for now, so we'll
-	// pass 'nil' as the third parameter.
-	req, err := http.NewRequest("GET", "/", nil)
+func TestCreateObd2DataHandler(t *testing.T) {
+	form := url.Values{}
+	form.Add("k42", "14.4")
+	form.Add("kff1202", "120")
+	form.Add("kff1225", "198")
+
+	// Create a request to pass to our handler.
+	req, err := http.NewRequest("POST", "/", strings.NewReader(form.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
 	if err != nil {
 		t.Fatal(err)
 	}
 
 	// We create a ResponseRecorder (which satisfies http.ResponseWriter) to record the response.
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(handlers.Home)
+	handler := http.HandlerFunc(handlers.CreateObd2Data)
 
 	// Our handlers satisfy http.Handler, so we can call their ServeHTTP method
 	// directly and pass in our Request and ResponseRecorder.
