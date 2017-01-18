@@ -8,6 +8,7 @@ import (
 )
 
 func SaveObd2Data(obd2Data *models.Obd2Data) (bool, error) {
+	defer Session().Close()
 	err := Obd2DataCollection().Insert(obd2Data)
 
 	if err != nil {
