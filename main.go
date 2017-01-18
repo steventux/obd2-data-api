@@ -10,7 +10,7 @@ import (
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/", handlers.Home).Methods("GET")
-	r.HandleFunc("/obd2-data/create", handlers.CreateObd2Data).Methods("POST")
+	r.HandleFunc("/obd2-data/create", handlers.CreateObd2Data).Methods("GET")
 	r.HandleFunc("/obd2-data/show", handlers.ShowObd2Data).Methods("GET")
 	http.Handle("/", r)
 	log.Fatal(http.ListenAndServe(":8000", r))

@@ -2,26 +2,21 @@
 package helpers
 
 import (
-	"bytes"
 	"github.com/steventux/obd2-data-api/helpers"
 	"net/http"
-	"net/url"
 	"testing"
 )
 
 func TestBuildObd2Data(t *testing.T) {
-	data := url.Values{}
-	data.Set("k42", "14.4")
-	data.Add("kc", "2550")
-	data.Add("kff1225", "199")
-	data.Add("kff5201", "36")
+	req, _ := http.NewRequest("GET", "/", nil)
 
-	req, err := http.NewRequest("POST", "/", bytes.NewBufferString(data.Encode()))
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	query := req.URL.Query()
+	query.Set("k42", "14.4")
+	query.Add("kc", "2550")
+	query.Add("kff1225", "199")
+	query.Add("kff5201", "36")
 
-	if err != nil {
-		t.Fatal(err)
-	}
+	req.URL.RawQuery = query.Encode()
 
 	obd2Data := helpers.BuildObd2Data(req)
 
