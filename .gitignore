@@ -2,6 +2,7 @@
 *.o
 *.a
 *.so
+obd2-data-api
 
 # Folders
 _obj
