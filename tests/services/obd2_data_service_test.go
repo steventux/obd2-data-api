@@ -10,8 +10,8 @@ import (
 )
 
 func TestSaveObd2Data(t *testing.T) {
-	options := map[string]string{"host": "localhost", "dbName": "test", "port": "27017"}
-	m, _ := clean_like_gopher.NewCleaningGopher("mongo", options)
+	m, _ := clean_like_gopher.NewCleaningGopher("mongo",
+		map[string]string{"host": "127.0.0.1", "dbName": "test", "port": "27017"})
 
 	services.SaveObd2Data(&models.Obd2Data{
 		Torque:    "198",
@@ -25,9 +25,6 @@ func TestSaveObd2Data(t *testing.T) {
 
 	err := services.Obd2DataCollection().Find(bson.M{"voltage": "14.4"}).One(&result)
 
-	m.Clean(nil)
-	m.Close()
-
 	if err != nil {
 		t.Errorf("error while retrieving data: %v", err)
 	}
@@ -35,4 +32,7 @@ func TestSaveObd2Data(t *testing.T) {
 	if &result == nil {
 		t.Errorf("service failed to save Torque data: got %v", result)
 	}
+
+	m.Clean(nil)
+	m.Close()
 }
