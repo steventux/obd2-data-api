@@ -1,7 +1,7 @@
 {
 	"ImportPath": "github.com/steventux/obd2-data-api",
 	"GoVersion": "go1.7",
-	"GodepVersion": "v77",
+	"GodepVersion": "v75",
 	"Deps": [
 		{
 			"ImportPath": "github.com/gorilla/mux",

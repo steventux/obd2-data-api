@@ -1,38 +1,36 @@
-// handlers_test.go
 package helpers
 
 import (
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
 	"github.com/steventux/obd2-data-api/helpers"
+	"github.com/steventux/obd2-data-api/models"
 	"net/http"
-	"testing"
 )
 
-func TestBuildObd2Data(t *testing.T) {
-	req, _ := http.NewRequest("GET", "/", nil)
+var (
+	obd2Data *models.Obd2Data
+)
 
-	query := req.URL.Query()
-	query.Set("k42", "14.4")
-	query.Add("kc", "2550")
-	query.Add("kff1225", "199")
-	query.Add("kff5201", "36")
+var _ = Describe("helpers.BuildObd2Data", func() {
+	BeforeEach(func() {
+		req, _ := http.NewRequest("GET", "/", nil)
 
-	req.URL.RawQuery = query.Encode()
+		query := req.URL.Query()
+		query.Set("k42", "14.4")
+		query.Add("kc", "2550")
+		query.Add("kff1225", "199")
+		query.Add("kff5201", "36")
 
-	obd2Data := helpers.BuildObd2Data(req)
+		req.URL.RawQuery = query.Encode()
 
-	if obd2Data.Voltage != "14.4" {
-		t.Errorf("Voltage not correct: got %v want %v", obd2Data.Voltage, "14.4")
-	}
+		obd2Data = helpers.BuildObd2Data(req)
+	})
 
-	if obd2Data.EngineRPM != "2550" {
-		t.Errorf("EngineRPM not correct: got %v want %v", obd2Data.EngineRPM, "2550")
-	}
-
-	if obd2Data.Torque != "199" {
-		t.Errorf("Torque not correct: got %v want %v", obd2Data.Torque, "199")
-	}
-
-	if obd2Data.MPGLongTermAverage != "36" {
-		t.Errorf("MPGLongTermAverage not correct: got %v want %v", obd2Data.MPGLongTermAverage, "36")
-	}
-}
+	It("should convert request params to model attributes", func() {
+		Expect(obd2Data.Voltage).To(Equal("14.4"))
+		Expect(obd2Data.Torque).To(Equal("199"))
+		Expect(obd2Data.EngineRPM).To(Equal("2550"))
+		Expect(obd2Data.MPGLongTermAverage).To(Equal("36"))
+	})
+})
