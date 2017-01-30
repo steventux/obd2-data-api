@@ -8,7 +8,8 @@ import (
 type Obd2Data struct {
 	ID                            bson.ObjectId `bson:"_id,omitempty"`
 	Session                       string
-	Timestamp                     time.Time
+	Timestamp                     string
+	CreatedAt                     time.Time
 	MassAirflowRate               string
 	ThrottlePosition              string
 	AirStatus                     string

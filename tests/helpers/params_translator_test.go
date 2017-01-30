@@ -18,6 +18,8 @@ var _ = Describe("helpers.BuildObd2Data", func() {
 
 		query := req.URL.Query()
 		query.Set("k42", "14.4")
+		query.Add("session", "123456abcdef")
+		query.Add("time", "2017-01-26 15:33:40")
 		query.Add("kc", "2550")
 		query.Add("kff1225", "199")
 		query.Add("kff5201", "36")
@@ -28,6 +30,8 @@ var _ = Describe("helpers.BuildObd2Data", func() {
 	})
 
 	It("should convert request params to model attributes", func() {
+		Expect(obd2Data.Session).To(Equal("123456abcdef"))
+		Expect(obd2Data.Timestamp).To(Equal("2017-01-26 15:33:40"))
 		Expect(obd2Data.Voltage).To(Equal("14.4"))
 		Expect(obd2Data.Torque).To(Equal("199"))
 		Expect(obd2Data.EngineRPM).To(Equal("2550"))

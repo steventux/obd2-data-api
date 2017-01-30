@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/gorilla/mux"
 	"github.com/steventux/obd2-data-api/helpers"
 	"github.com/steventux/obd2-data-api/services"
 	"net/http"
@@ -23,7 +24,14 @@ func CreateObd2Data(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte("OK"))
 }
 
-func ShowObd2Data(http.ResponseWriter, *http.Request) {
+func ShowObd2Data(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	var session = vars["session"]
+	if session == "" {
+		// Get latest session
+		session = services.GetLatestObd2DataSession()
+	}
+	// Get data by session and respond with it.
 }
 
 func renderError(w http.ResponseWriter, status int, errorString string) {

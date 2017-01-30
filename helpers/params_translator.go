@@ -8,6 +8,7 @@ import (
 func BuildObd2Data(r *http.Request) *models.Obd2Data {
 	return &models.Obd2Data{
 		Session:                   r.FormValue("session"),
+		Timestamp:                 r.FormValue("time"),
 		MassAirflowRate:           r.FormValue("k10"),
 		ThrottlePosition:          r.FormValue("k11"),
 		AirStatus:                 r.FormValue("k12"),
