@@ -2,8 +2,11 @@ package handlers
 
 import (
 	"github.com/gorilla/mux"
+	"github.com/nbio/httpcontext"
 	"github.com/steventux/obd2-data-api/helpers"
 	"github.com/steventux/obd2-data-api/services"
+	"github.com/zbindenren/negroni-mongo"
+	"gopkg.in/mgo.v2"
 	"net/http"
 )
 
@@ -14,7 +17,8 @@ func CreateObd2Data(w http.ResponseWriter, r *http.Request) {
 	}
 
 	obd2Data := helpers.BuildObd2Data(r)
-	_, err := services.SaveObd2Data(obd2Data)
+	db := getDatabaseFromRequestContext(r)
+	_, err := services.SaveObd2Data(db, obd2Data)
 
 	if err != nil {
 		renderError(w, 500, "Couldn't save obd2 data")
@@ -29,7 +33,8 @@ func ShowObd2Data(w http.ResponseWriter, r *http.Request) {
 	var session = vars["session"]
 	if session == "" {
 		// Get latest session
-		session = services.GetLatestObd2DataSession()
+		db := getDatabaseFromRequestContext(r)
+		session = services.GetLatestObd2DataSession(db)
 	}
 	// Get data by session and respond with it.
 }
@@ -37,4 +42,8 @@ func ShowObd2Data(w http.ResponseWriter, r *http.Request) {
 func renderError(w http.ResponseWriter, status int, errorString string) {
 	w.WriteHeader(status)
 	w.Write([]byte(errorString))
+}
+
+func getDatabaseFromRequestContext(r *http.Request) *mgo.Database {
+	return httpcontext.Get(r, negronimongo.ContextKey).(*mgo.Database)
 }

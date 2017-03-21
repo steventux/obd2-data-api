@@ -9,11 +9,9 @@ import (
 	"time"
 )
 
-func SaveObd2Data(obd2Data *models.Obd2Data) (bool, error) {
-	defer Session().Close()
-
+func SaveObd2Data(db *mgo.Database, obd2Data *models.Obd2Data) (bool, error) {
 	obd2Data.CreatedAt = time.Now()
-	err := Obd2DataCollection().Insert(obd2Data)
+	err := obd2DataCollection(db).Insert(obd2Data)
 
 	if err != nil {
 		log.Fatal(err)
@@ -23,22 +21,20 @@ func SaveObd2Data(obd2Data *models.Obd2Data) (bool, error) {
 	}
 }
 
-func GetLatestObd2DataSession() string {
-	defer Session().Close()
+func GetLatestObd2DataSession(db *mgo.Database) string {
 	var result *models.Obd2Data
 
-	err := Obd2DataCollection().Find(nil).Sort("-createdat").One(&result)
+	err := obd2DataCollection(db).Find(nil).Sort("-createdat").One(&result)
 	if err != nil {
 		log.Fatal(err)
 	}
 	return result.Session
 }
 
-func GetObd2DataForSession(session string) []models.Obd2Data {
-	defer Session().Close()
+func GetObd2DataForSession(db *mgo.Database, session string) []models.Obd2Data {
 	var results []models.Obd2Data
 
-	err := Obd2DataCollection().Find(bson.M{"session": session}).Sort("createdat").All(&results)
+	err := obd2DataCollection(db).Find(bson.M{"session": session}).Sort("createdat").All(&results)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -46,15 +42,6 @@ func GetObd2DataForSession(session string) []models.Obd2Data {
 	return results
 }
 
-func Obd2DataCollection() *mgo.Collection {
-	return Session().DB(os.Getenv("MONGODB_DB")).C(os.Getenv("MONGODB_COLLECTION"))
-}
-
-func Session() *mgo.Session {
-	session, err := mgo.Dial(os.Getenv("MONGODB_HOSTS"))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return session
+func obd2DataCollection(db *mgo.Database) *mgo.Collection {
+	return db.C(os.Getenv("MONGODB_COLLECTION"))
 }
